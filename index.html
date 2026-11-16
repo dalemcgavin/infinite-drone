@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Drone</title>
+    <title>Infinite Drone</title>
     <link rel="manifest" href="manifest.webmanifest" />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />   
     <style>
@@ -158,16 +158,16 @@
         transform: scale(0.95);
     }
 
-    #start, #question {
+    #play, #question {
         background: #2a3a5a;
         border-color: #4a9eff;
         color: #4a9eff;
     }
 
-    #start:hover, #question:hover {
+    #play:hover, #question:hover {
         background: #3a4a6a;
         color: #fff;
-    }
+    }   
 
     #free {
         border-color: #4aff4a;
@@ -178,18 +178,27 @@
         background: #1a3a1a;
         color: #fff;
     }   
+    @keyframes ripple {
+        0% {
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 1;
+        }
+        100% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0;
+        }
+    }
     </style>
 </head>
 <body>
 
-    <h1>Drone</h1>
+    <h1>Infinite Drone</h1>
     <div class="circle" id="circle"></div>
     <div id="readout"></div>
     <div id="degree-toggles"></div>
 
     <div class="controls">
-        <button id="start">Start</button>
-        <button id="stop">Stop</button>
+        <button id="play">Play</button>
         <button id="random">Random</button>
         <button id="question">Question</button>
         <button id="free">Free</button>

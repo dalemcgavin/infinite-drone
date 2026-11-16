@@ -62,6 +62,7 @@ class Drone {
         delay.delayTime.value = 0.35;
         const feedback = this.ctx.createGain();
         feedback.gain.value = 0.4;
+        this.feedback = feedback;
         const delayGain = this.ctx.createGain();
         delayGain.gain.value = 0.15;
         this.filter.connect(delay);
@@ -95,11 +96,12 @@ class Drone {
         lfo3Gain.connect(this.master.gain);
         lfo3.start();
 
+        this.lfos = [vib, lfo2, lfo3]
         const configs = [
             { detune: 0,  vol: 0.4, pan: -0.6 },
-            { detune: 7,  vol: 0.3, pan: -0.2 },
-            { detune: -5, vol: 0.3, pan: 0.0 },
-            { detune: 3,  vol: 0.2, pan: 0.3 },
+            { detune: 7,  vol: 0.2, pan: -0.2 },
+            { detune: -5, vol: 0.2, pan: 0.0 },
+            { detune: 3,  vol: 0.1, pan: 0.3 },
             { detune: -8, vol: 0.2, pan: 0.7 },
         ];
 
@@ -131,9 +133,9 @@ class Drone {
 
         // Add 2-3 quieter voices at the 5th (same detune/pan spread, lower volume)
         const fifthConfigs = [
-            { detune: 0,  vol: 0.25, pan: -0.4 },
-            { detune: 5,  vol: 0.2,  pan: 0.2 },
-            { detune: -4, vol: 0.15, pan: 0.5 },
+            { detune: 0,  vol: 0.15, pan: -0.4 },
+            { detune: 5,  vol: 0.1,  pan: 0.2 },
+            { detune: -4, vol: 0.05, pan: 0.5 },
         ];
 
         for (const { detune, vol, pan } of fifthConfigs) {
@@ -202,12 +204,12 @@ class Drone {
 
         const g = this.ctx.createGain();
         g.gain.setValueAtTime(0.3, now);
-        g.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
 
         osc.connect(g);
         g.connect(this.ctx.destination);
         osc.start();
-        osc.stop(now + 0.5);
+        osc.stop(now + 1.5);
 
         this.lastMidi = midi;
     }
@@ -235,9 +237,16 @@ class Drone {
         const now = this.ctx.currentTime;
         this.master.gain.setValueAtTime(this.master.gain.value, now);
         this.master.gain.linearRampToValueAtTime(0, now + 1);
+        this.feedback.gain.setValueAtTime(this.feedback.gain.value, now);
+        this.feedback.gain.linearRampToValueAtTime(0, now + 2.5);
         for (const osc of this.oscs) {
-            osc.stop(now + 1);
+            osc.stop(now + 2.5);
         }
+
+        for (const lfo of this.lfos) {
+            try { lfo.stop(now + 1); } catch (e) {}
+        }
+        setTimeout(() => { this.ctx.close(); }, 2500);
     }
 }
 
@@ -281,19 +290,19 @@ function flash(color) {
     el.style.cssText = `
         position: absolute;
         top: 50%; left: 50%;
-        width: 60px; height: 60px;
-        margin: -30px;
+        width: calc(min(280px, 75vw) * 0.8);
+        height: calc(min(280px, 75vw) * 0.8);
         border-radius: 50%;
-        background: ${color};
-        opacity: 0.8;
+        border: 3px solid ${color};
+        background: transparent;
         pointer-events: none;
-        transition: opacity 0.4s;
         z-index: 10;
+        transform: translate(-50%, -50%) scale(0);
+        animation: ripple 0.8s ease-out forwards;
     `;
     circle.appendChild(el);
-    requestAnimationFrame(() => { el.style.opacity = '0'; });
-    setTimeout(() => el.remove(), 500);
-}   
+    setTimeout(() => el.remove(), 800);
+}         
 
 function clearHighlight() {
     circle.querySelectorAll('.note').forEach(n => n.classList.remove('active'));
@@ -360,19 +369,21 @@ DEGREES.forEach(d => {
     toggles.appendChild(btn);
 });
 
-// Controls
-document.getElementById('start').addEventListener('click', () => {
-    drone?.stop();
-    const root = 36 + Math.floor(Math.random() * 12); // C2–B2
-    drone = new Drone(root);
-    clearHighlight();
-});
+document.getElementById('play').addEventListener('click', () => {
+    const btn = document.getElementById('play');
 
-document.getElementById('stop').addEventListener('click', () => {
-    drone?.stop();
-    drone = null;
-    clearHighlight();
-});
+    if (drone) {
+        drone.stop();
+        drone = null;
+        btn.textContent = 'Play';
+        clearHighlight();
+    } else {
+        const root = 36 + Math.floor(Math.random() * 12);
+        drone = new Drone(root);
+        btn.textContent = 'Pause';
+        clearHighlight();
+    }
+});   
 
 document.getElementById('random').addEventListener('click', () => {
     if (!drone) return;
