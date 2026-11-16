@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drone</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />   
+    <style>
+    * { margin: 0; box-sizing: border-box; }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        padding-top: 1rem;
+        background: #1a1a2e;
+        color: #eee;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+    }
+
+    h1 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #aaa;
+    }
+
+    .circle {
+        position: relative;
+        width: min(280px, 75vw);
+        height: min(280px, 75vw);
+    }
+
+    .circle::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(min(280px, 75vw) * 0.8);
+        height: calc(min(280px, 75vw) * 0.8);
+        margin: calc(min(280px, 75vw) * -0.4) 0 0 calc(min(280px, 75vw) * -0.4);
+        border-radius: 50%;
+        border: 1px solid #3a3a5a;
+        z-index: 0;
+    }
+
+    .note {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 44px;
+        height: 44px;
+        margin: -22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-weight: 600;
+        font-size: 0.95rem;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        background: #2a2a4a;
+        border: 2px solid #3a3a5a;
+        transition: all 0.2s;
+        user-select: none;
+        z-index: 1;
+        transform: rotate(var(--angle)) translateY(calc(min(280px, 75vw) * -0.4)) rotate(calc(var(--angle) * -1));
+    }
+
+    .note:hover {
+        background: #3a3a6a;
+        border-color: #5a5a8a;
+        transform: rotate(var(--angle)) translateY(calc(min(280px, 75vw) * -0.4)) rotate(calc(var(--angle) * -1)) scale(1.1);
+    }
+
+    .note.active {
+        background: #4a9eff;
+        border-color: #4a9eff;
+        color: #fff;
+    }
+
+    #readout {
+        margin-top: 0.5rem;
+        font-size: 1.3rem;
+        font-weight: 600;
+        min-height: 1.5rem;
+        color: #aaa;
+    }
+
+    #degree-toggles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        justify-content: center;
+        margin-top: 0.8rem;
+        max-width: 260px;
+    }
+
+    #degree-toggles button {
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 0.3rem 0.6rem;
+        border: 1px solid #3a3a5a;
+        border-radius: 6px;
+        background: #1e1e3a;
+        color: #6a6a8a;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    #degree-toggles button:hover {
+        border-color: #5a5a8a;
+        color: #aaa;
+    }
+
+    #degree-toggles button.active {
+        background: #2a3a5a;
+        border-color: #4a9eff;
+        color: #4a9eff;
+    }
+
+    .controls {
+        margin-top: 0.8rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .controls button {
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        padding: 0.5rem 1.1rem;
+        border: 1px solid #3a3a5a;
+        border-radius: 8px;
+        background: #1e1e3a;
+        color: #ccc;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .controls button:hover {
+        background: #2a2a4a;
+        border-color: #5a5a8a;
+        color: #fff;
+    }
+
+    .controls button:active {
+        transform: scale(0.95);
+    }
+
+    #start, #question {
+        background: #2a3a5a;
+        border-color: #4a9eff;
+        color: #4a9eff;
+    }
+
+    #start:hover, #question:hover {
+        background: #3a4a6a;
+        color: #fff;
+    }
+
+    #free {
+        border-color: #4aff4a;
+        color: #4aff4a;
+    }
+
+    #free:hover {
+        background: #1a3a1a;
+        color: #fff;
+    }   
+    </style>
+</head>
+<body>
+
+    <h1>Drone</h1>
+    <div class="circle" id="circle"></div>
+    <div id="readout"></div>
+    <div id="degree-toggles"></div>
+
+    <div class="controls">
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <button id="random">Random</button>
+        <button id="question">Question</button>
+        <button id="free">Free</button>
+    </div>
+    <script type="module" src="drone.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js');
+        }
+    </script>
+</body>
+</html>   
