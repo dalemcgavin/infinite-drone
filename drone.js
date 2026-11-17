@@ -378,6 +378,9 @@ document.getElementById('play').addEventListener('click', async () => {
         btn.textContent = 'Play';
         clearHighlight();
     } else {
+        if ('audioSession' in navigator) {
+            navigator.audioSession.type = 'playback';
+        }
         const root = 36 + Math.floor(Math.random() * 12);
         drone = new Drone(root);
         await drone.ctx.resume();
