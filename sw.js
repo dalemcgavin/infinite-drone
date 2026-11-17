@@ -21,6 +21,12 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
     e.respondWith(
-        caches.match(e.request).then(r => r || fetch(e.request))
+        fetch(e.request)
+            .then(response => {
+                const copy = response.clone();
+                caches.open(CACHE).then(c => c.put(e.request, copy));
+                return response;
+            })
+            .catch(() => caches.match(e.request))
     );
 });   
