@@ -127,12 +127,11 @@
 
     .controls {
         margin-top: 0.8rem;
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 0.5rem;
-        justify-content: center;
+        width: min(280px, 75vw);
     }
-
     .controls button {
         font-family: 'Space Grotesk', system-ui, sans-serif;
         font-weight: 600;
@@ -167,8 +166,39 @@
     #play:hover, #question:hover {
         background: #3a4a6a;
         color: #fff;
-    }   
+    }
 
+    #presets {
+        display: flex;
+        gap: 0.4rem;
+        margin-top: 0.6rem;
+    }
+
+    #presets button {
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-weight: 600;
+        font-size: 0.75rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        padding: 0.3rem 0.7rem;
+        border: 1px solid #3a3a5a;
+        border-radius: 6px;
+        background: #1e1e3a;
+        color: #6a6a8a;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    #presets button:hover {
+        border-color: #5a5a8a;
+        color: #aaa;
+    }
+
+    #presets button.active {
+        background: #2a3a5a;
+        border-color: #4a9eff;
+        color: #4a9eff;
+    }   
     #free {
         border-color: #4aff4a;
         color: #4aff4a;
@@ -202,6 +232,12 @@
         <button id="key-change">Key Change</button>
         <button id="question">Question</button>
         <button id="free">Free</button>
+    </div>
+    <div id="presets">
+        <button data-preset="major" class="active">Major</button>
+        <button data-preset="minor">Minor</button>
+        <button data-preset="pentatonic">Pent</button>
+        <button data-preset="all">All</button>
     </div>
     <script type="module" src="drone.js"></script>
     <script>

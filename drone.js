@@ -410,3 +410,20 @@ document.getElementById('free').addEventListener('click', () => {
     asked = false;
     clearHighlight();
 });   
+
+// Presets
+document.querySelectorAll('#presets button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const preset = PRESETS[btn.dataset.preset];
+        active = new Set(preset);
+
+        // Update toggle buttons
+        document.querySelectorAll('#degree-toggles button').forEach((t, i) => {
+            t.classList.toggle('active', active.has(DEGREES[i].offset));
+        });
+
+        // Highlight the active preset button
+        document.querySelectorAll('#presets button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    });
+});
