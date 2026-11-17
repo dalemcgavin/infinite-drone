@@ -380,16 +380,18 @@ document.getElementById('play').addEventListener('click', () => {
     } else {
         const root = 36 + Math.floor(Math.random() * 12);
         drone = new Drone(root);
+        await drone.ctx.resume(); 
         btn.textContent = 'Pause';
         clearHighlight();
     }
 });   
 
-document.getElementById('random').addEventListener('click', () => {
+document.getElementById('key-change').addEventListener('click', () => {
     if (!drone) return;
     const root = 36 + Math.floor(Math.random() * 12); // C2–B2
     drone.setRoot(root);
     clearHighlight();
+    asked = false;
 });
 
 document.getElementById('question').addEventListener('click', () => {
