@@ -369,7 +369,7 @@ DEGREES.forEach(d => {
     toggles.appendChild(btn);
 });
 
-document.getElementById('play').addEventListener('click', () => {
+document.getElementById('play').addEventListener('click', async () => {
     const btn = document.getElementById('play');
 
     if (drone) {
@@ -380,7 +380,7 @@ document.getElementById('play').addEventListener('click', () => {
     } else {
         const root = 36 + Math.floor(Math.random() * 12);
         drone = new Drone(root);
-        await drone.ctx.resume(); 
+        await drone.ctx.resume();
         btn.textContent = 'Pause';
         clearHighlight();
     }
