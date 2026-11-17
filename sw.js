@@ -1,6 +1,6 @@
 const CACHE = 'drone-v1';
 const FILES = [
-    '/',
+    './',
     './drone.js',
     './manifest.webmanifest',
 ];
